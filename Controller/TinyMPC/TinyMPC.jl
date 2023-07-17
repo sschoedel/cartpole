@@ -12,7 +12,7 @@ end
 function forward_pass!(d, x, u, params, N)
     cache = params.cache
     for k = 1:(N-1)
-        u[k] .= -cache.Kinf*x[k] - d[k] 
+        u[k] .= -cache.Kinf*x[k] - d[k]
         x[k+1] .= cache.Ã*x[k] + cache.B̃*u[k]
     end
 end

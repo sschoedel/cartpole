@@ -51,12 +51,6 @@ git-tree-sha1 = "08d0b679fd7caa49e2bca9214b131289e19808c0"
 uuid = "ad839575-38b3-5650-b840-f874b8c74a25"
 version = "0.12.5"
 
-[[BlockDiagonals]]
-deps = ["ChainRulesCore", "FillArrays", "FiniteDifferences", "LinearAlgebra"]
-git-tree-sha1 = "ffd635c19b56f50d1d4278d876219644299b5711"
-uuid = "0a1fb500-61f7-11e9-3c65-f5ef3456f9f0"
-version = "0.1.41"
-
 [[Bzip2_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
 git-tree-sha1 = "19a35467a82e236ff51bc17a3a44b69ef35185a2"
@@ -238,23 +232,11 @@ version = "1.16.1"
 [[FileWatching]]
 uuid = "7b1f6079-737a-58dc-b8bc-7a2ca5c1b5ee"
 
-[[FillArrays]]
-deps = ["LinearAlgebra", "Random", "SparseArrays", "Statistics"]
-git-tree-sha1 = "7072f1e3e5a8be51d525d64f63d3ec1287ff2790"
-uuid = "1a297f60-69ca-5386-bcde-b61e274b549b"
-version = "0.13.11"
-
 [[FiniteDiff]]
 deps = ["ArrayInterface", "LinearAlgebra", "Requires", "Setfield", "SparseArrays", "StaticArrays"]
 git-tree-sha1 = "c6e4a1fbe73b31a3dea94b1da449503b8830c306"
 uuid = "6a86dc24-6348-571c-b903-95158fe2bd41"
 version = "2.21.1"
-
-[[FiniteDifferences]]
-deps = ["ChainRulesCore", "LinearAlgebra", "Printf", "Random", "Richardson", "SparseArrays", "StaticArrays"]
-git-tree-sha1 = "549636fd813ddf1816d8407efb23f486822f4b63"
-uuid = "26cc04aa-876d-5657-8c51-4c34ba976000"
-version = "0.12.29"
 
 [[FixedPointNumbers]]
 deps = ["Statistics"]
@@ -832,12 +814,6 @@ deps = ["UUIDs"]
 git-tree-sha1 = "838a3a4188e2ded87a4f9f184b4b0d78a1e91cb7"
 uuid = "ae029012-a4dd-5104-9daa-d747884805df"
 version = "1.3.0"
-
-[[Richardson]]
-deps = ["LinearAlgebra"]
-git-tree-sha1 = "e03ca566bec93f8a3aeb059c8ef102f268a38949"
-uuid = "708f8203-808e-40c0-ba2d-98a6953ed40d"
-version = "1.4.0"
 
 [[RobotDynamics]]
 deps = ["FiniteDiff", "ForwardDiff", "LinearAlgebra", "RecipesBase", "Rotations", "SparseArrays", "SparseDiffTools", "StaticArrays", "UnsafeArrays"]
