@@ -15,7 +15,6 @@ using SparseArrays
 using StaticArrays
 using Random
 
-
 using Plots
 using Printf
 
@@ -28,9 +27,16 @@ using Printf
 ###### Cartpole params
 #### Pole angle is measured as an offset from vertical (vertical = 0 radians) - clockwise is positive
 #### Length is distance to the center of mass and is assumed to be half the length of the pole for moment of inertia calculation
-mc = 0.3 # mass of the cart (kg)
-mp = 0.366 # mass of the pole (kg)
-ℓ = 0.349 # distance to the center of mass (meters)
+
+# For long pole
+# mc = 0.3 # mass of the cart (kg)
+# mp = 0.366 # mass of the pole (kg)
+# ℓ = 0.349 # distance to the center of mass (meters)
+
+# For short pole
+mc = 0.177 # mass of the cart (kg)
+mp = 0.300 # mass of the pole (kg)
+ℓ = 0.184 # distance to the center of mass (meters)
 
 g = 9.81
 
@@ -92,7 +98,7 @@ nu = 1 # number of controls
 
 # Cost weights
 # TODO: tune these! (cart position, pole angle, cart linear velocity, pole angular velocity)
-Q = collect(Diagonal([50; 40; 30; 100]))
+Q = collect(Diagonal([500; 40; 30; 100]))
 # Q = collect(Diagonal([40; 40; 30; 10]))
 R = 2;
 

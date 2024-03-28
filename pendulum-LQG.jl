@@ -16,7 +16,6 @@ using StaticArrays
 using Random
 using TrajOptPlots
 
-
 using Plots
 using Printf
 
