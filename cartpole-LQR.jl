@@ -37,8 +37,8 @@ using JLD2
 
 # For short pole
 mc = 0.177 # mass of the cart (kg)
-mp = 0.300 # mass of the pole (kg)
-ℓ = 0.184 # distance to the center of mass (meters)
+mp = 0.076 # mass of the pole (kg)
+ℓ = 0.29845 # distance to the center of mass (meters)
 
 g = 9.81
 
@@ -212,7 +212,7 @@ use_kf = true
 ##
 
 X, U = load_object("swingup/traj.jld2")
-X = [X[i] - [0, π, 0, 0] for i in length(X)]
+X = [X_ - [0, π, 0, 0] for X_ in X]
 plot(hcat(X...)', label=["x" "θ" "xv" "θv"])
 plot!(hcat(U...)', label="u")
 

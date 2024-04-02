@@ -81,20 +81,41 @@ def get_rail_encoder_pos():
 def get_shoulder_encoder_pos():
     global odrv0, last_encoder_val_shoulder, shoulder_encoder
 
-    encoder_val = odrv0.inc_encoder1.raw
 
-    if last_encoder_val_shoulder < ODRIVE_OVERFLOW_COMP and encoder_val > UINT16_MAX - ODRIVE_OVERFLOW_COMP:
-        diff = -(UINT16_MAX - encoder_val + last_encoder_val_shoulder)
-    elif last_encoder_val_shoulder > UINT16_MAX - ODRIVE_OVERFLOW_COMP and encoder_val < ODRIVE_OVERFLOW_COMP:
-        diff = UINT16_MAX - last_encoder_val_shoulder + encoder_val 
+    # # When using incremental encoder
+    # encoder_val = odrv0.inc_encoder1.raw
+
+    # if last_encoder_val_shoulder < ODRIVE_OVERFLOW_COMP and encoder_val > UINT16_MAX - ODRIVE_OVERFLOW_COMP:
+    #     diff = -(UINT16_MAX - encoder_val + last_encoder_val_shoulder)
+    # elif last_encoder_val_shoulder > UINT16_MAX - ODRIVE_OVERFLOW_COMP and encoder_val < ODRIVE_OVERFLOW_COMP:
+    #     diff = UINT16_MAX - last_encoder_val_shoulder + encoder_val 
+    # else:
+    #     diff = encoder_val - last_encoder_val_shoulder
+
+    # last_encoder_val_shoulder = encoder_val
+    
+    # shoulder_encoder += diff 
+
+    # return ((shoulder_encoder * SHOULDER_TO_ANGLE_RATIO) + SHOULDER_OFFSET) % (2*np.pi)
+    
+    
+    # When using magnetic encoder
+    encoder_val = odrv0.spi_encoder0.raw
+    
+    if last_encoder_val_shoulder < .25 and encoder_val >= 1 - .25:
+        diff = -(1 - encoder_val + last_encoder_val_shoulder)
+    elif last_encoder_val_shoulder > 1 - .25 and encoder_val <= .25:
+        diff = 1 - last_encoder_val_shoulder + encoder_val
     else:
         diff = encoder_val - last_encoder_val_shoulder
-
+    
     last_encoder_val_shoulder = encoder_val
     
-    shoulder_encoder += diff 
+    shoulder_encoder -= diff
+    
+    return shoulder_encoder * 6.28318530718 # 1 revolution = 2*pi radians
 
-    return ((shoulder_encoder * SHOULDER_TO_ANGLE_RATIO) + SHOULDER_OFFSET) % (2*np.pi)
+
 
 ##### PUBLIC FUNCTIONS #####
 
