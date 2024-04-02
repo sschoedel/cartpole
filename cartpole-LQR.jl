@@ -18,6 +18,8 @@ using Random
 using Plots
 using Printf
 
+using JLD2
+
 # using MeshCat
 # using GeometryTypes
 # using ColorTypes
@@ -177,12 +179,12 @@ function kf_update(x_meas, x_pred_prev, est_cov_prev)
 end
 
 function kf_predict(state, control, est_cov)
-    x_pred = A*state + B*control
-    est_cov_pred = A*est_cov*A' + process_noise_cov
+    Ã = ForwardDiff.jacobian(dx->cartpole_rk4(dx, control), state)
+    # x_pred = A*state + B*control
+    x_pred = cartpole_rk4(state, control)
+    est_cov_pred = Ã*est_cov*Ã' + process_noise_cov
     return x_pred, est_cov_pred
 end
-
-##
 
 control_lim = 3
 
@@ -206,6 +208,15 @@ x_ests[1] = x_lqr[1]
 x_est = x_pred_prev
 
 use_kf = true
+
+##
+
+X, U = load_object("swingup/traj.jld2")
+X = [X[i] - [0, π, 0, 0] for i in length(X)]
+plot(hcat(X...)', label=["x" "θ" "xv" "θv"])
+plot!(hcat(U...)', label="u")
+
+##
 
 for k = 1:Nsim-1
     # Measure new state
