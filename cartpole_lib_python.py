@@ -36,11 +36,13 @@ last_encoder_val_rail = 0
 rail_encoder = 0
 shoulder_encoder = 0
 
+flip_rail_direction = True
+
 ##### PRIVATE FUNCTIONS #####
 
 # handle the fact that the odrive encoder initializes at 0 and won't let you set an offset
 def get_rail_encoder_pos():
-    global odrv0, last_encoder_val_rail, rail_encoder
+    global odrv0, last_encoder_val_rail, rail_encoder, flip_rail_direction
 
 
     # # When using incremental encoder
@@ -62,7 +64,10 @@ def get_rail_encoder_pos():
     
     
     # When using onboard encoder (magnetic)
-    encoder_val = odrv0.onboard_encoder0.raw
+    # encoder_val = odrv0.onboard_encoder0.raw
+    
+    # When using AMS AS5048A spi encoder (magnetic)
+    encoder_val = odrv0.spi_encoder0.raw
     
     if last_encoder_val_rail < .25 and encoder_val >= 1 - .25:
         diff = -(1 - encoder_val + last_encoder_val_rail)
@@ -73,7 +78,10 @@ def get_rail_encoder_pos():
     
     last_encoder_val_rail = encoder_val
     
-    rail_encoder -= diff
+    if flip_rail_direction:
+        rail_encoder += diff
+    else:
+        rail_encoder -= diff
     
     return rail_encoder * 0.11938052083 # 2*pi*r = 2*pi*(19mm) = 2*pi*0.019
 
@@ -100,7 +108,7 @@ def get_shoulder_encoder_pos():
     
     
     # When using magnetic encoder
-    encoder_val = odrv0.spi_encoder0.raw
+    encoder_val = odrv0.spi_encoder1.raw
     
     if last_encoder_val_shoulder < .25 and encoder_val >= 1 - .25:
         diff = -(1 - encoder_val + last_encoder_val_shoulder)

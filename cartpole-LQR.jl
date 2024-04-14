@@ -30,19 +30,14 @@ using JLD2
 #### Pole angle is measured as an offset from vertical (vertical = 0 radians) - clockwise is positive
 #### Length is distance to the center of mass and is assumed to be half the length of the pole for moment of inertia calculation
 
-# For long pole
-# mc = 0.3 # mass of the cart (kg)
-# mp = 0.366 # mass of the pole (kg)
-# ℓ = 0.349 # distance to the center of mass (meters)
-
-# For short pole
-mc = 0.177 # mass of the cart (kg)
-mp = 0.076 # mass of the pole (kg)
-ℓ = 0.29845 # distance to the center of mass (meters)
+mc = 0.03 # mass of the cart (kg)
+mp = 0.015 # mass of the pole (kg)
+# ℓ = 0.053 # distance to the center of mass (meters)
+ℓ = 0.106 # distance to the center of mass (meters)
 
 g = 9.81
 
-h = 1/60
+h = 1/300
 
 ##
 
@@ -75,22 +70,18 @@ xg = [0; 0; 0; 0]; # position, angle, linear vel, angular vel
 
 # Linearized state and control matrices
 A = ForwardDiff.jacobian(dx->cartpole_rk4(dx, 0), xg)
+B = ForwardDiff.derivative(du->cartpole_rk4(xg, du), 0)
 # A[:,4] /= 2
 display(A)
-clipboard(@sprintf "A = np.array([[%.10f, %.10f, %.10f, %.10f],
-              [%.10f, %.10f, %.10f, %.10f],
-              [%.10f, %.10f, %.10f, %.10f],
-              [%.10f, %.10f, %.10f, %.10f]])" A'...)
-
-##
-
-
-B = ForwardDiff.derivative(du->cartpole_rk4(xg, du), 0)
 display(B)
-clipboard(@sprintf "B = np.array([[%.5f],
+clipboard(@sprintf "A = np.array([[%.10f, %.10f, %.10f, %.10f/div],
+              [%.10f, %.10f, %.10f, %.10f/div],
+              [%.10f, %.10f, %.10f, %.10f/div],
+              [%.10f, %.10f, %.10f, %.10f/div]])   
+B = np.array([[%.5f],
               [%.10f],
               [%.10f],
-              [%.10f]])" B...)
+              [%.10f]])" [A' B]...)
 
 ##
 
@@ -100,16 +91,16 @@ nu = 1 # number of controls
 
 # Cost weights
 # TODO: tune these! (cart position, pole angle, cart linear velocity, pole angular velocity)
-Q = collect(Diagonal([500; 40; 30; 100]))
-# Q = collect(Diagonal([40; 40; 30; 10]))
-R = 2;
+Q = collect(Diagonal([50; 50; 10; 10]))
+# Q = collect(Diagonal([4; 4; 3; 1]))
+R = 0.1;
 
 # Might need to invert some of the gains depending on rotation / translation directions of the joints
-K = dlqr(A,B,Q,R)
+K = dlqr(A, B, Q, R)
 
 display(K)
 
-clipboard(@sprintf "k_matrix = np.array([%.5f, %.5f, %.5f, %.5f/2]) * .2" K...)
+clipboard(@sprintf "k_matrix = np.array([%.5f, %.5f, %.5f, %.5f/div]) * k_mult" K...)
 
 ##
 
@@ -120,7 +111,7 @@ angle_vel_factor = 0.95
 
 # Quantize the real state based on what the sensors would read
 function measure_state(x) # sensor state is position, angle
-    x_meas = [0.0;0.0]
+    x_meas = [0.0; 0.0]
     x_meas[1] = round(Int, linear_enc_cpr * x[1])/linear_enc_cpr
     x_meas[2] = round(Int, angular_enc_cpr * x[2])/angular_enc_cpr
     return x_meas
@@ -188,7 +179,8 @@ end
 
 control_lim = 3
 
-Nsim = 500
+Tf = 3
+Nsim = Int(Tf/h)
 x_lqr = [zeros(nx) for i = 1:Nsim]
 x_lqr[1] = [0; -.2; 0; 0]
 u_lqr = zeros(Nsim-1)
